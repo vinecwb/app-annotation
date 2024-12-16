@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,13 +12,16 @@ Route::get('/criar-conta', [UserController::class, 'create'])->name('create-acco
 
 Route::post('/criar-conta', [UserController::class, 'store'])->name('insert-account');
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+Route::get('/login', [AuthController::class, 'index'])->name('login');
+Route::post('/login', [AuthController::class, 'loginAttempt'])->name('auth');
+Route::get('/logout', [AuthController::class, 'index'])->name('logout');
 
-Route::post('/login', function () {
-    return 'validação e inserção de usuario';
-})->name('auth');
+Route::middleware(['auth]'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
+
 
 Route::get('/esqueceu-senha', function () {
     // return view('login');

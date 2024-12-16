@@ -31,13 +31,25 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|min:2|max:200',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|max:200',
+            'email' => 'required|min:5|max:200|email',
+            'password' => 'required|min:7|max:300'
         ]);
 
-        $user = $user->fill($validated);
-        $user->password = Hash::make($validated['password']);
-        $user->save();
+        $strongPassword = $user->validatePassword($validated['password']);
+
+        try {
+            if ($user->where('email', $validated['email'])->exists()) {
+                return back()->withInput()->withErrors(['email' => 'O campo email já foi cadastrado!']);
+            } else {
+                $user = $user->fill($validated);
+                $user->password = Hash::make($strongPassword);
+                $user->save();
+
+                return back()->with('status', 'Conta criada com sucesso!');
+            }
+        } catch (\Exception $ex) {
+            return "Ocorreu algum problema ao realizar a inserção!";
+        }
     }
 
     /**
