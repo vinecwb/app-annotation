@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController; // Ensure this class exists in the specified namespace
 
 Route::get('/', function () {
     return view('home');
@@ -16,10 +17,8 @@ Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'loginAttempt'])->name('auth');
 Route::get('/logout', [AuthController::class, 'index'])->name('logout');
 
-Route::middleware(['auth]'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 

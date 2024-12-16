@@ -28,7 +28,7 @@ class AuthController extends Controller
         return back()->withInput()->with('status', 'Credenciais inválidas!');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
 
